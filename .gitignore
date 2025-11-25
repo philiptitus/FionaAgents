@@ -1,0 +1,6 @@
+# Environment variables
+.env
+
+# Day 1 notebooks
+day-1a-from-prompt-to-action.ipynb
+day-1b-agent-architectures.ipynb
