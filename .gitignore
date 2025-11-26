@@ -1,6 +1,18 @@
 # Environment variables
 .env
 
-# Day 1 notebooks
+# Day 1 & 2 Learning Notebooks (Kaggle course materials)
 day-1a-from-prompt-to-action.ipynb
 day-1b-agent-architectures.ipynb
+day-2a-agent-tools.ipynb
+day-2b-agent-tools-best-practices.ipynb
+mcp_image_generator.py
+
+# Hugging Face ML Prediction Notebooks & Scripts (Educational/Testing)
+huggingface-ml-predictions.ipynb
+hf_prediction_standalone.py
+hf_prediction_practical.py
+HF_ARCHITECTURE_PLAN.md
+HF_PREDICTION_README.md
+hugging-mcp-docs.md
+# 

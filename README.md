@@ -41,7 +41,27 @@ This workflow runs three research agents simultaneously, then synthesizes findin
 
 ---
 
-#### 3. Iterative Problem Refinement (Loop Agents)
+#### 3. Personalized Lead Outreach (Agent Tools Pattern)
+**File:** `personalized-lead-outreach.ipynb`
+
+This notebook demonstrates the Agent Tools pattern where agents are used as tools within other agents:
+- **Researcher Agent** - Conducts comprehensive lead research using Google Search
+- **Main Outreach Agent** - Uses researcher as a tool to gather intelligence, then generates personalized emails
+
+**Features:**
+- Multi-step research gathering (role, company, background, social presence, achievements)
+- Research-backed email personalization
+- Clear separation of concerns (specialist agents)
+- Reusable researcher agent for other workflows
+- Simple two-variable input (career field + lead name)
+
+**How it fits Fiona:** This demonstrates how agents can specialize and delegate work. Users input a lead name and career field, the researcher agent gathers intelligence, and the main agent produces highly personalized outreach emails ready for Fiona campaigns.
+
+**Integration:** Generated emails can be imported directly into Fiona's template library or used as starting points for bulk campaigns.
+
+---
+
+#### 4. Iterative Problem Refinement (Loop Agents)
 **File:** `loop-agent-problem-refinement.ipynb`
 
 This workflow discovers and refines problems through iterative passes:
@@ -52,6 +72,40 @@ This workflow discovers and refines problems through iterative passes:
 **How it fits Fiona:** Quality of email lists matters. This agent validates that discovered problems are real and substantial, ensuring Fiona users build campaigns targeting genuine, location-specific opportunities. The loop refinement ensures data accuracy across multiple iterations.
 
 **Integration:** Refined problem lists become targeting criteria in Fiona. Users can segment contact lists based on validated industry problems, improving campaign relevance and conversion rates.
+
+---
+
+#### 5. Human-in-the-Loop Lead Outreach (Approval & Regeneration)
+**File:** `human_in_loop_lead_outreach.py` (Standalone Script)
+
+This production-ready workflow implements intelligent lead research with human approval and AI regeneration:
+- **Researcher Agent** - Conducts comprehensive lead research using Google Search
+- **Outreach Agent** - Generates personalized cold outreach emails
+- **Approval Agent** - Submits emails for human review (pausable workflow)
+- **Delivery Agent** - Sends approved emails or triggers regeneration
+
+**Features:**
+-  Personalized lead research (company, role, achievements, social presence)
+-  AI-generated customized emails (subject + body)
+-  Human-in-the-loop approval workflow (approve/reject/edit/regenerate)
+-  Automatic regeneration on rejection (up to 3 attempts)
+-  Mock email sending (ready for Fiona/SendGrid integration)
+-  Interactive command-line interface for approvals
+
+**How it fits Fiona:** This script demonstrates production-quality workflows that maintain human oversight. Users can research leads, approve generated emails, and send through Fiona with confidence that each message has been reviewed. The regeneration loop ensures email quality meets user standards before sending.
+
+**Integration:** 
+- Output emails can be imported directly into Fiona campaigns
+- Approval workflow integrates with Fiona's UI for user decisions
+- Mock send can connect to Fiona backend or SendGrid
+- Session state persists across long approval cycles
+
+**Usage:**
+```bash
+python human_in_loop_lead_outreach.py
+```
+
+Then interact with the approval menu to review, edit, or regenerate emails before sending.
 
 ---
 
@@ -66,6 +120,10 @@ Used when order matters and each step builds on the previous one.
 ### Parallel Pattern
 Used when independent tasks can run simultaneously for speed.
 - Reddit research + Quora research + Freelance research (all at once)
+
+### Agent Tools Pattern
+Used when agents need to specialize and delegate work to other agents.
+- Researcher agent (finds data) + Main agent (uses research to craft output)
 
 ### Loop Pattern
 Used for iterative refinement and quality assurance.
@@ -82,6 +140,10 @@ Used for iterative refinement and quality assurance.
 | Multi-Source Research | Parallel Agent | Fast, comprehensive market research in seconds |
 | Career-Based Segmentation | Sequential Agent | Target users by career field and industry skills |
 | Rapid Prototyping | All Agents | Test campaign angles instantly before sending via Fiona |
+| Agent Specialization | Personalized Lead Outreach (Agent Tools) | Researchers and outreach specialists work independently |
+| Research-Backed Personalization | Personalized Lead Outreach (Agent Tools) | Authentic emails with genuine lead insights |
+| Human-Approved Outreach | Human-in-the-Loop Script | AI generates, humans approve, regenerate until satisfied |
+| Lead Intelligence | Human-in-the-Loop Script | Research-backed personalization increases engagement |
 
 ---
 
@@ -123,9 +185,17 @@ Used for iterative refinement and quality assurance.
 - **Input:** Career field
 - **Output:** 3-4 ready-to-send email templates with subject lines
 
+### Personalized Lead Outreach
+- **Input:** Career field, lead name
+- **Output:** Lead research summary, personalized cold outreach email
+
 ### Iterative Problem Refinement
 - **Input:** Career, industry, city
 - **Output:** Validated list of problems (one sentence each)
+
+### Human-in-the-Loop Lead Outreach
+- **Input:** Career field, lead name, lead email
+- **Output:** Researched lead profile, personalized email (subject + body), user approval status, sent message ID
 
 ---
 
@@ -144,13 +214,15 @@ These agents are designed to integrate with Fiona's Django backend:
 
 ```
 mira/
-├── career-outreach-sequential-agents.ipynb      # Sequential workflow
-├── parallel-cold-email-outreach.ipynb           # Parallel workflow
-├── loop-agent-problem-refinement.ipynb          # Loop workflow
+├── career-outreach-sequential-agents.ipynb      # Sequential workflow (notebook)
+├── parallel-cold-email-outreach.ipynb           # Parallel workflow (notebook)
+├── personalized-lead-outreach.ipynb             # Agent Tools pattern (notebook)
+├── loop-agent-problem-refinement.ipynb          # Loop workflow (notebook)
+├── human_in_loop_lead_outreach.py               # Human approval + regeneration (standalone script)
 ├── requirements.txt                              # Dependencies
 ├── .env                                          # API keys (gitignored)
 ├── .gitignore                                    # Excludes sensitive files
-└── sample-agent/                                 # ADK sample project
+└── README.md                                     # This file
 ```
 
 ---
