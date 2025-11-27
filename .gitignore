@@ -7,6 +7,8 @@ day-1b-agent-architectures.ipynb
 day-2a-agent-tools.ipynb
 day-2b-agent-tools-best-practices.ipynb
 mcp_image_generator.py
+day-3a-agent-sessions(1).ipynb
+day-3b-agent-memory.ipynb
 
 # Hugging Face ML Prediction Notebooks & Scripts (Educational/Testing)
 huggingface-ml-predictions.ipynb
@@ -16,3 +18,6 @@ HF_ARCHITECTURE_PLAN.md
 HF_PREDICTION_README.md
 hugging-mcp-docs.md
 # 
+
+
+lead_research_memory.db

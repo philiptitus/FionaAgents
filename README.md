@@ -109,7 +109,62 @@ Then interact with the approval menu to review, edit, or regenerate emails befor
 
 ---
 
-## Architecture & Workflow Patterns
+#### 6. Lead Memory Research (Persistent Sessions & State Management)
+**File:** `lead_memory_research.py` (Standalone Script)
+
+This production script demonstrates persistent session management with SQLite database:
+- **Researcher Agent** - Gathers comprehensive lead information using Google Search
+- **Memory Agent** - Asks multiple questions about the lead, remembering information across turns
+- **Session State** - Stores research in `lead:name` and `lead:research` keys
+- **Database Persistence** - Uses SQLite with async support (aiosqlite)
+- **Interactive Terminal** - Continuous conversation with lead memory
+
+**Features:**
+- 🧠 Research a lead once, ask unlimited questions about them
+- 💾 All data persists in SQLite database (survives application restarts)
+- 📝 Session state automatically tracks lead information
+- 🔍 `database` command to inspect what's stored in SQLite
+- `info` command to view current lead data in memory
+- Multi-session support (different leads in different sessions)
+
+**How it fits Fiona:** This demonstrates how to build agents that maintain long-term lead intelligence. Sales teams can research prospects once, then ask contextual questions across multiple sessions without re-researching. All lead data persists in the database, enabling better targeting and follow-up campaigns.
+
+**Integration:**
+- Lead research and memory data flows to Fiona's CRM system
+- Session state can be exported to Fiona contact profiles
+- Enables lead scoring based on research findings
+- Supports multi-turn lead qualification workflows
+
+**Usage:**
+```bash
+python lead_memory_research.py
+```
+
+**Example Workflow:**
+```
+You > research Satya Nadella
+     (Agent researches and saves to database)
+
+You > What companies has he worked at?
+     (Agent retrieves saved research, answers from memory)
+
+You > What are his recent achievements?
+     (Same research, new question - all from database)
+
+You > database
+     (Inspect SQLite database structure and contents)
+
+You > quit
+     (Exit - lead research persists in database!)
+```
+
+**Key Technical Features:**
+- `DatabaseSessionService` with `sqlite+aiosqlite://` for async SQLite
+- Auto-created database file: `lead_research_memory.db`
+- Session state management with `tool_context.state`
+- Resumable apps that survive interruptions
+
+---
 
 These agents demonstrate three core ADK patterns that enhance Fiona:
 
@@ -144,6 +199,9 @@ Used for iterative refinement and quality assurance.
 | Research-Backed Personalization | Personalized Lead Outreach (Agent Tools) | Authentic emails with genuine lead insights |
 | Human-Approved Outreach | Human-in-the-Loop Script | AI generates, humans approve, regenerate until satisfied |
 | Lead Intelligence | Human-in-the-Loop Script | Research-backed personalization increases engagement |
+| Multi-Turn Memory | Lead Memory Research (Persistent Sessions) | Ask unlimited questions about leads, all remembered |
+| Database Persistence | Lead Memory Research (Persistent Sessions) | Lead research survives restarts, enables long-term tracking |
+| Lead Qualification | Lead Memory Research (Persistent Sessions) | Interactive questioning builds complete prospect profiles |
 
 ---
 
@@ -197,6 +255,10 @@ Used for iterative refinement and quality assurance.
 - **Input:** Career field, lead name, lead email
 - **Output:** Researched lead profile, personalized email (subject + body), user approval status, sent message ID
 
+### Lead Memory Research (Persistent Sessions)
+- **Input:** Lead name (first query), unlimited follow-up questions
+- **Output:** Research findings, answers to questions based on remembered data, session state persisted in SQLite
+
 ---
 
 ## Integration with Fiona Backend
@@ -207,6 +269,36 @@ These agents are designed to integrate with Fiona's Django backend:
 2. **Contact List Segmentation** - Validated problems become targeting filters
 3. **Bulk Email Generation** - Multi-template output enables A/B testing in Fiona
 4. **Analytics Integration** - Track which agent-generated templates perform best
+5. **Lead Memory & Persistence** - Lead Memory Research script can:
+   - Export session state to Fiona contact profiles
+   - Store lead research data in Fiona CRM
+   - Enable multi-turn lead qualification workflows
+   - Build complete prospect profiles across sessions
+   - Support long-term lead tracking and scoring
+
+**Architecture Example - Lead Memory Integration:**
+```
+Fiona Frontend
+    ↓
+[User enters: Lead name]
+    ↓
+Lead Memory Research Agent
+    ├─ Research (one-time, stored in SQLite)
+    └─ Questions (unlimited, always using stored research)
+    ↓
+Session State (persisted in lead_research_memory.db)
+    ├─ lead:name
+    ├─ lead:research
+    └─ Additional custom fields
+    ↓
+Export to Fiona
+    ├─ Lead research → Contact profile
+    ├─ Session history → Interaction log
+    └─ Memory state → CRM fields
+    ↓
+Multi-session Lead Tracking
+    └─ Can resume where you left off, even after restart
+```
 
 ---
 
@@ -219,6 +311,8 @@ mira/
 ├── personalized-lead-outreach.ipynb             # Agent Tools pattern (notebook)
 ├── loop-agent-problem-refinement.ipynb          # Loop workflow (notebook)
 ├── human_in_loop_lead_outreach.py               # Human approval + regeneration (standalone script)
+├── lead_memory_research.py                      # Persistent sessions + memory (standalone script)
+├── lead_research_memory.db                      # SQLite database (auto-created)
 ├── requirements.txt                              # Dependencies
 ├── .env                                          # API keys (gitignored)
 ├── .gitignore                                    # Excludes sensitive files
