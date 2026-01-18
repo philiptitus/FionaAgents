@@ -1,0 +1,4 @@
+functions-framework>=3.0.0
+google-adk
+google-genai
+flask>=2.0.0
